@@ -37,8 +37,8 @@ func SignIn(c echo.Context) error {
 	if !res {
 		return echo.ErrUnauthorized
 	} else {
-		userid := user.Email
-		AccessToken, err := CreateAccessToken(userid)
+		userid := user.Email                          //save user email -> user id
+		AccessToken, err := CreateAccessToken(userid) //create ac token
 		if err != nil {
 			log.Println("Err Creating Access_Token!", err)
 		}
@@ -50,7 +50,7 @@ func SignIn(c echo.Context) error {
 
 		c.SetCookie(JWTaccessCookie)
 
-		RefreshToken, err := createRefreshToken(userid)
+		RefreshToken, err := createRefreshToken(userid) //create rf token
 		if err != nil {
 			log.Println("Err Creating Access_Token!", err)
 		}
