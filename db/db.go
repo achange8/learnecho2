@@ -28,6 +28,7 @@ func Connect() *gorm.DB {
 	if err != nil {
 		panic(err.Error())
 	}
-
+	sqldb, err := db.DB()
+	sqldb.SetMaxIdleConns(10)
 	return db
 }
