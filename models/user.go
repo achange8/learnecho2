@@ -19,3 +19,8 @@ type BOARD struct {
 	Content string `json:CONTENT`
 	DB_DATE string
 }
+
+type Refresh struct {
+	id       string `json:id`
+	reftoken string `json:reftoken`
+}

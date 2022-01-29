@@ -17,14 +17,22 @@ func Boardform(e echo.Context) error {
 
 //post board ~/write
 func WriteBoard(c echo.Context) error {
-	user := c.Get("user")
-	token := user.(*jwt.Token)
-	claims := token.Claims.(jwt.MapClaims)
+	cookie, err := c.Cookie("JWTaccessToken")
+	if err != nil { //TODO : reqeust refresh token ,create new actoken or login again
+		return c.JSON(http.StatusBadRequest, "You dont have accookie")
+	}
 
+	//get claims from jwt token without validation
+	rawtoken := cookie.Value
+	token, err := jwt.Parse(rawtoken, nil)
+	if token == nil {
+		return err
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
 	board := new(models.BOARD)
 	board.Writer = claims["jti"].(string)
-	board.DB_DATE = time.Now().Format("15:04") //format time
-	err := c.Bind(board)
+	board.DB_DATE = time.Now().Format("2006-01-02 15:04") //format time
+	err = c.Bind(board)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "bad request")
 	}

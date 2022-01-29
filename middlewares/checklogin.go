@@ -19,7 +19,7 @@ func Setlogincheker(g *echo.Group) {
 	g.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS512",
 		SigningKey:    []byte(os.Getenv("key")),
-		TokenLookup:   "cookie:<JWTaccessCookie>",
+		TokenLookup:   "cookie:JWTaccessCookie",
 	}))
 }
 
@@ -32,6 +32,6 @@ func SetRefreshChecker(g *echo.Group) {
 	g.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS512",
 		SigningKey:    []byte(os.Getenv("key2")),
-		TokenLookup:   "cookie:<JWTRefreshToken>",
+		TokenLookup:   "cookie:JWTRefreshToken",
 	}))
 }

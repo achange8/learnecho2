@@ -22,3 +22,7 @@ CREATE TABLE users(
     "id" : "tester04",
     "password" : "test1234"
 }
+
+create table refreshs(
+    id VARCHAR(30) NOT NULL,
+    reftoken VARCHAR(1000) NOT NULL);

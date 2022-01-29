@@ -28,39 +28,36 @@ func SignIn(c echo.Context) error {
 
 	// 존재하지않는 아이디일 경우
 	if result.RowsAffected == 0 {
-		return echo.ErrBadRequest
+		return c.JSON(http.StatusBadRequest, "ID doesn't exist")
 	}
 
 	res := helper.CheckPasswordHash(user.Password, inputpw)
 
 	// 비밀번호 검증에 실패한 경우
 	if !res {
-		return echo.ErrUnauthorized
+		return c.JSON(http.StatusBadRequest, "wrong password")
 	} else {
 		//create ac token
 		AccessToken, err := CreateAccessToken(user.Id)
 		if err != nil {
-			log.Println("Err Creating Access_Token!", err)
+			log.Println("Err Creating Access Token!", err)
 		}
-		JWTaccessCookie := new(http.Cookie)
 
-		JWTaccessCookie.Name = "JWTaccessCookie"
-		JWTaccessCookie.Value = AccessToken
-		JWTaccessCookie.Expires = time.Now().Add(15 * time.Minute)
-		JWTaccessCookie.HttpOnly = true
-
+		JWTaccessCookie := CreateAccessCookie(user.Id, AccessToken)
 		c.SetCookie(JWTaccessCookie)
-		//create rf token
+
+		////TODO : save id and Refresh token in DB///
+
 		RefreshToken, err := createRefreshToken(user.Id)
 		if err != nil {
-			log.Println("Err Creating Access_Token!", err)
+			log.Println("Err Creating Refresh Token!", err)
 		}
 		RefreshCookie := new(http.Cookie)
 		RefreshCookie.Name = "JWTRefreshToken"
 		RefreshCookie.Value = RefreshToken
 		RefreshCookie.Expires = time.Now().Add(24 * 7 * time.Hour)
+		RefreshCookie.Path = "/"
 		RefreshCookie.HttpOnly = true
-
 		c.SetCookie(RefreshCookie)
 
 		return c.JSON(http.StatusOK, map[string]string{
@@ -69,6 +66,16 @@ func SignIn(c echo.Context) error {
 			"Refresh_Token": RefreshToken,
 		})
 	}
+}
+
+func CreateAccessCookie(userID string, AccessToken string) *http.Cookie {
+	JWTaccessCookie := new(http.Cookie)
+	JWTaccessCookie.Name = "JWTaccessToken"
+	JWTaccessCookie.Value = AccessToken
+	JWTaccessCookie.Expires = time.Now().Add(15 * time.Minute)
+	JWTaccessCookie.HttpOnly = true
+	JWTaccessCookie.Path = "/"
+	return JWTaccessCookie
 }
 
 func CreateAccessToken(userID string) (string, error) {
