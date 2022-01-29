@@ -42,7 +42,7 @@ func SignIn(c echo.Context) error {
 		if err != nil {
 			log.Println("Err Creating Access Token!", err)
 		}
-
+		//create ac cookie
 		JWTaccessCookie := CreateAccessCookie(user.Id, AccessToken)
 		c.SetCookie(JWTaccessCookie)
 
@@ -52,12 +52,7 @@ func SignIn(c echo.Context) error {
 		if err != nil {
 			log.Println("Err Creating Refresh Token!", err)
 		}
-		RefreshCookie := new(http.Cookie)
-		RefreshCookie.Name = "JWTRefreshToken"
-		RefreshCookie.Value = RefreshToken
-		RefreshCookie.Expires = time.Now().Add(24 * 7 * time.Hour)
-		RefreshCookie.Path = "/"
-		RefreshCookie.HttpOnly = true
+		RefreshCookie := createRefreshCookie(user.Id, RefreshToken)
 		c.SetCookie(RefreshCookie)
 
 		return c.JSON(http.StatusOK, map[string]string{
@@ -76,6 +71,15 @@ func CreateAccessCookie(userID string, AccessToken string) *http.Cookie {
 	JWTaccessCookie.HttpOnly = true
 	JWTaccessCookie.Path = "/"
 	return JWTaccessCookie
+}
+func createRefreshCookie(userID string, RefreshToken string) *http.Cookie {
+	RefreshCookie := new(http.Cookie)
+	RefreshCookie.Name = "JWTRefreshToken"
+	RefreshCookie.Value = RefreshToken
+	RefreshCookie.Expires = time.Now().Add(24 * 7 * time.Hour)
+	RefreshCookie.Path = "/"
+	RefreshCookie.HttpOnly = true
+	return RefreshCookie
 }
 
 func CreateAccessToken(userID string) (string, error) {
