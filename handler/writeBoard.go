@@ -23,7 +23,7 @@ func WriteBoard(c echo.Context) error {
 
 	board := new(models.BOARD)
 	board.Writer = claims["jti"].(string)
-	board.DB_DATE = time.Now().Format("15:04")
+	board.DB_DATE = time.Now().Format("15:04") //format time
 	err := c.Bind(board)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "bad request")
