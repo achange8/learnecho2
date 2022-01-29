@@ -11,7 +11,6 @@ import (
 )
 
 func Connect() *gorm.DB {
-
 	envERR := godotenv.Load(".env")
 	if envERR != nil {
 		fmt.Println("Could not load .env file")
@@ -28,7 +27,6 @@ func Connect() *gorm.DB {
 	if err != nil {
 		panic(err.Error())
 	}
-	sqldb, err := db.DB()
-	sqldb.SetMaxIdleConns(10)
+
 	return db
 }

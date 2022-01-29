@@ -9,8 +9,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func SighUp(c echo.Context) error {
-
+func Signup(c echo.Context) error {
 	user := new(models.User)
 	err := c.Bind(user)
 	if err != nil {
@@ -19,14 +18,22 @@ func SighUp(c echo.Context) error {
 		})
 	}
 	db := db.Connect()
+	//find email
 	result := db.Find(&user, "email=?", user.Email)
-
 	if result.RowsAffected != 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "existing email",
 		})
 	}
 
+	//find id existing
+	id := db.Find(&user, "id=?", user.Id)
+
+	if id.RowsAffected != 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "existing id",
+		})
+	}
 	//create pw -> hash val
 	hashpw, err := helper.HashPassword(user.Password)
 	if err != nil {

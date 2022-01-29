@@ -14,6 +14,7 @@ import (
 )
 
 func SignIn(c echo.Context) error {
+	db := db.Connect()
 	user := new(models.User)
 
 	if err := c.Bind(user); err != nil {
@@ -23,8 +24,7 @@ func SignIn(c echo.Context) error {
 	}
 	inputpw := user.Password
 
-	db := db.Connect()
-	result := db.Find(user, "email=?", user.Email)
+	result := db.Find(user, "id=?", user.Id)
 
 	// 존재하지않는 아이디일 경우
 	if result.RowsAffected == 0 {
@@ -37,30 +37,31 @@ func SignIn(c echo.Context) error {
 	if !res {
 		return echo.ErrUnauthorized
 	} else {
-		userid := user.Email                          //save user email -> user id
-		AccessToken, err := CreateAccessToken(userid) //create ac token
+		//create ac token
+		AccessToken, err := CreateAccessToken(user.Id)
 		if err != nil {
 			log.Println("Err Creating Access_Token!", err)
 		}
 		JWTaccessCookie := new(http.Cookie)
+
 		JWTaccessCookie.Name = "JWTaccessCookie"
 		JWTaccessCookie.Value = AccessToken
 		JWTaccessCookie.Expires = time.Now().Add(15 * time.Minute)
 		JWTaccessCookie.HttpOnly = true
 
 		c.SetCookie(JWTaccessCookie)
-
-		RefreshToken, err := createRefreshToken(userid) //create rf token
+		//create rf token
+		RefreshToken, err := createRefreshToken(user.Id)
 		if err != nil {
 			log.Println("Err Creating Access_Token!", err)
 		}
 		RefreshCookie := new(http.Cookie)
-		RefreshCookie.Name = "JWTaccessCookie"
+		RefreshCookie.Name = "JWTRefreshToken"
 		RefreshCookie.Value = RefreshToken
 		RefreshCookie.Expires = time.Now().Add(24 * 7 * time.Hour)
 		RefreshCookie.HttpOnly = true
 
-		c.SetCookie(JWTaccessCookie)
+		c.SetCookie(RefreshCookie)
 
 		return c.JSON(http.StatusOK, map[string]string{
 			"message":       "You were logged in!",
@@ -71,11 +72,9 @@ func SignIn(c echo.Context) error {
 }
 
 func CreateAccessToken(userID string) (string, error) {
-	claims := models.JwtClaims{
-		jwt.StandardClaims{
-			Id:        userID,
-			ExpiresAt: time.Now().Add(15 * time.Minute).Unix(),
-		},
+	claims := jwt.StandardClaims{
+		Id:        userID,
+		ExpiresAt: time.Now().Add(15 * time.Minute).Unix(),
 	}
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	token, err := rawToken.SignedString([]byte(os.Getenv("key")))
@@ -86,14 +85,13 @@ func CreateAccessToken(userID string) (string, error) {
 }
 
 func createRefreshToken(userID string) (string, error) {
-	claims := models.JwtClaims{
-		jwt.StandardClaims{
-			Id:        userID,
-			ExpiresAt: time.Now().Add(24 * 7 * time.Hour).Unix(),
-		},
+	claims := jwt.StandardClaims{
+		Id:        userID,
+		ExpiresAt: time.Now().Add(24 * 7 * time.Hour).Unix(),
 	}
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	token, err := rawToken.SignedString([]byte(os.Getenv("key")))
+
+	token, err := rawToken.SignedString([]byte(os.Getenv("key2")))
 	if err != nil {
 		return "", err
 	}
