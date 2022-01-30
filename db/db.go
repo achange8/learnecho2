@@ -11,6 +11,7 @@ import (
 )
 
 func Connect() *gorm.DB {
+
 	envERR := godotenv.Load(".env")
 	if envERR != nil {
 		fmt.Println("Could not load .env file")
@@ -23,7 +24,6 @@ func Connect() *gorm.DB {
 
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(CONNECT), &gorm.Config{})
-
 	if err != nil {
 		panic(err.Error())
 	}

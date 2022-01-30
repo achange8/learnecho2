@@ -28,7 +28,7 @@ func TokenchekMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			refresh := new(models.Refresh)
 			cookie, err := c.Cookie("refreshtoken")
 			if err != nil { //todo go signin point
-				return c.JSON(http.StatusBadRequest, "You dont have rfcookie Do signin again")
+				return c.JSON(http.StatusUnauthorized, "You dont have rfcookie Do signin again")
 			}
 			rawtoken := cookie.Value
 			if rawtoken == "" { //todo go signin point
