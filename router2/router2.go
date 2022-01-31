@@ -1,12 +1,10 @@
 package router2
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/achange8/learnecho2/handler"
 	"github.com/achange8/learnecho2/middlewares"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 )
 
@@ -25,10 +23,10 @@ func New() *echo.Echo {
 }
 
 func Uprofile(c echo.Context) error {
-	user := c.Get("user")
-	token := user.(*jwt.Token)
-	claims := token.Claims.(jwt.MapClaims)
-	log.Println("User ID: ", claims["jti"])
+	// user := c.Get("user")
+	// token := user.(*jwt.Token)
+	// claims := token.Claims.(jwt.MapClaims)
+	// log.Println("User ID: ", claims["jti"])
 
 	return c.String(http.StatusOK, "logged in user page")
 }

@@ -26,20 +26,22 @@ func TokenchekMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		if rawtoken == "" || err != nil {
 			db := db.Connect()
 			refresh := new(models.Refresh)
-			cookie, err := c.Cookie("refreshtoken")
+			RFcookie, err := c.Cookie("RefreshCookie")
 			if err != nil { //todo go signin point
-				return c.JSON(http.StatusUnauthorized, "You dont have rfcookie Do signin again")
+				return err
 			}
-			rawtoken := cookie.Value
-			if rawtoken == "" { //todo go signin point
+			refreshtoken := RFcookie.Value
+			if refreshtoken == "" { //todo go signin point
 				return c.JSON(http.StatusUnauthorized, "null RF cookie Do signin again")
 			}
 			//dont reftoken in db
-			result := db.Select("id").Find(&refresh, rawtoken)
+			result := db.Find(refresh, "reftoken = ?", refreshtoken)
 			if result.RowsAffected == 0 { //todo go signin point
 				return c.JSON(http.StatusUnauthorized, "Do signin again")
 			}
-			token, err := jwt.Parse(rawtoken, nil)
+
+			//	refresh token OK ,remake//
+			token, err := jwt.Parse(refreshtoken, nil)
 			if token == nil {
 				return err
 			}

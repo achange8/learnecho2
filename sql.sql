@@ -4,8 +4,9 @@ create table boards
     TITLE VARCHAR(100) NOT NULL,
     WRITER VARCHAR(50) NOT NULL,
     CONTENT VARCHAR(4000) NOT NULL,
-    DB_DATE varchar(10),
+    DB_DATE varchar(30),
     HiTCOUNT INT default(0));
+
 
 CREATE TABLE users(
     id varchar(30) NOT NULL UNIQUE,

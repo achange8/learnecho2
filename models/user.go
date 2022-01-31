@@ -21,6 +21,6 @@ type BOARD struct {
 }
 
 type Refresh struct {
-	id       string `json:id`
-	reftoken string `json:reftoken`
+	Id       string
+	Reftoken string
 }

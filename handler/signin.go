@@ -16,6 +16,7 @@ import (
 func SignIn(c echo.Context) error {
 	db := db.Connect()
 	user := new(models.User)
+	refresh := new(models.Refresh)
 
 	if err := c.Bind(user); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
@@ -47,14 +48,24 @@ func SignIn(c echo.Context) error {
 		c.SetCookie(JWTaccessCookie)
 
 		////TODO : save id and Refresh token in DB///
-
 		RefreshToken, err := createRefreshToken(user.Id)
 		if err != nil {
 			log.Println("Err Creating Refresh Token!", err)
 		}
-		RefreshCookie := createRefreshCookie(user.Id, RefreshToken)
-		c.SetCookie(RefreshCookie)
-
+		id := db.Find(&refresh, "id=?", user.Id)
+		if id.RowsAffected != 0 {
+			db.Model(&refresh).Where("id =?", user.Id).Update("reftoken", RefreshToken)
+			// UPDATE refreshes SET `reftoken` = RefreshToken WHERE id = user.Id
+		} else {
+			RefreshCookie := createRefreshCookie(user.Id, RefreshToken)
+			c.SetCookie(RefreshCookie)
+			refresh.Id = user.Id
+			refresh.Reftoken = RefreshToken
+			//create reftoken in db//
+			if err := db.Create(&refresh); err.Error != nil {
+				return c.JSON(http.StatusInternalServerError, "failed saving token to db")
+			}
+		}
 		return c.JSON(http.StatusOK, map[string]string{
 			"message":       "You were logged in!",
 			"Access_Token":  AccessToken,
