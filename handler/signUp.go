@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/achange8/learnecho2/db"
@@ -13,29 +12,25 @@ import (
 func Signup(c echo.Context) error {
 	db := db.Connect()
 	user := new(models.User)
-
 	if err := c.Bind(user); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "bad request",
 		})
 	}
-	//find email
-	c.JSON(200, user)
-	userID := user.Id
-	result := db.Find(user, "email=?", user.Email)
-	c.JSON(200, user)
-	fmt.Println(result)
+
+	savepassword := user.Password
+	//find id,email existing
+	id := db.Find(user, "id=?", user.Id)
+	result := db.Raw("SELECT * FROM users WHERE email = ?", user.Email).Scan(&user)
+	if id.RowsAffected != 0 {
+		return c.JSON(http.StatusBadRequest, "existing id")
+	}
 	if result.RowsAffected != 0 {
 		return c.JSON(http.StatusBadRequest, "existing email")
 	}
 
-	//find id existing
-	id := db.Find(user, "id=?", userID)
-	if id.RowsAffected != 0 {
-		return c.JSON(http.StatusBadRequest, "existing id")
-	}
 	//create pw -> hash val
-	hashpw, err := helper.HashPassword(user.Password)
+	hashpw, err := helper.HashPassword(savepassword)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": err.Error(),
