@@ -22,14 +22,26 @@ func TokenchekMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			os.Exit(1)
 		}
 		cookie, err := c.Cookie("JWTaccessToken")
-
-		//recreate access token if exist reftokn.
-		if err != nil {
+		if err == nil {
+			///auth access token
+			rawtoken := cookie.Value
+			_, err = jwt.ParseWithClaims(rawtoken, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+				return []byte(os.Getenv("key")), nil
+			})
+			if err != nil {
+				if err == jwt.ErrSignatureInvalid {
+					return c.JSON(http.StatusUnauthorized, "signature is invalid")
+				}
+				return c.JSON(http.StatusForbidden, "Authorization failed")
+			}
+			return next(c)
+		} else {
+			//recreate access token if exist reftokn.
 			db := db.Connect()
 			refresh := new(models.Refresh)
 			cookie, err := c.Cookie("JWTRefreshToken")
 			if err != nil { //todo go signin point
-				return c.JSON(http.StatusUnauthorized, "err! signin again")
+				return c.JSON(http.StatusUnauthorized, "no refresh token! signin again")
 			}
 			///// auth & parse refresh token ///
 			rawRefreshtoken := cookie.Value
@@ -64,54 +76,7 @@ func TokenchekMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				}
 				return c.JSON(http.StatusForbidden, "Authorization failed")
 			}
-
-			return next(c)
-		} else {
-
-			///auth access token
-			rawtoken := cookie.Value
-			_, err = jwt.ParseWithClaims(rawtoken, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-				return []byte(os.Getenv("key")), nil
-			})
-			if err != nil {
-				if err == jwt.ErrSignatureInvalid {
-					return c.JSON(http.StatusUnauthorized, "signature is invalid")
-				}
-				return c.JSON(http.StatusForbidden, "Authorization failed")
-			}
 			return next(c)
 		}
 	}
 }
-
-/*
-func retakecookies(c echo.Context) error {
-	db := db.Connect()
-	refresh := new(models.Refresh)
-	cookie, err := c.Cookie("refreshtoken")
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, "You dont have rfcookie Do signin again")
-	}
-	rawtoken := cookie.Value
-	if rawtoken == "" {
-		return c.JSON(http.StatusUnauthorized, "null RF cookie Do signin again")
-	}
-	result := db.Select("id").Find(&refresh, rawtoken)
-	//dont reftoken in db
-	if result.RowsAffected == 0 {
-		return c.JSON(http.StatusUnauthorized, "Do signin again")
-	}
-	token, err := jwt.Parse(rawtoken, nil)
-	if token == nil {
-		return err
-	}
-	claims, _ := token.Claims.(jwt.MapClaims)
-	userid := claims["jti"].(string)
-	newtoken, err := handler.CreateAccessToken(userid)
-	if err != nil {
-		log.Println("Err Creating Refresh Token!", err)
-	}
-	JWTaccessCookie := handler.CreateAccessCookie(userid, newtoken)
-	c.SetCookie(JWTaccessCookie)
-	return nil
-}*/

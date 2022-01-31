@@ -26,7 +26,6 @@ func SignIn(c echo.Context) error {
 	inputpw := user.Password
 
 	result := db.Find(user, "id=?", user.Id)
-
 	// 존재하지않는 아이디일 경우
 	if result.RowsAffected == 0 {
 		return c.JSON(http.StatusBadRequest, "ID doesn't exist")

@@ -42,18 +42,3 @@ func WriteBoard(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, "done!")
 }
-
-// func updateBoard(c echo.Context) error {
-// 	//load data from db to update
-
-// 	board := new(models.BOARD)
-// 	err := c.Bind(board)
-// 	if err != nil {
-// 		return c.JSON(http.StatusBadRequest, "bad request")
-// 	}
-// 	db := db.Connect()
-// 	if err := db.Create(&board); err.Error != nil {
-// 		return c.JSON(http.StatusInternalServerError, "failed write!")
-// 	}
-// 	return c.JSON(http.StatusOK, "done!")
-// }
