@@ -57,15 +57,14 @@ func SignIn(c echo.Context) error {
 			db.Model(&refresh).Where("id =?", user.Id).Update("reftoken", RefreshToken)
 			// UPDATE refreshes SET `reftoken` = RefreshToken WHERE id = user.Id
 		} else {
-			RefreshCookie := createRefreshCookie(user.Id, RefreshToken)
-			c.SetCookie(RefreshCookie)
 			refresh.Id = user.Id
 			refresh.Reftoken = RefreshToken
-			//create reftoken in db//
-			if err := db.Create(&refresh); err.Error != nil {
-				return c.JSON(http.StatusInternalServerError, "failed saving token to db")
-			}
+			db.Create(&refresh)
 		}
+		//make  refresh cookie
+		RefreshCookie := createRefreshCookie(user.Id, RefreshToken)
+		c.SetCookie(RefreshCookie)
+
 		return c.JSON(http.StatusOK, map[string]string{
 			"message":       "You were logged in!",
 			"Access_Token":  AccessToken,
@@ -107,7 +106,7 @@ func CreateAccessToken(userID string) (string, error) {
 }
 
 func createRefreshToken(userID string) (string, error) {
-	claims := jwt.StandardClaims{
+	claims := &jwt.StandardClaims{
 		Id:        userID,
 		ExpiresAt: time.Now().Add(24 * 7 * time.Hour).Unix(),
 	}
