@@ -8,8 +8,9 @@ import (
 	"github.com/achange8/learnecho2/db"
 	"github.com/achange8/learnecho2/handler"
 	"github.com/achange8/learnecho2/models"
-	"github.com/golang-jwt/jwt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/joho/godotenv"
+
 	"github.com/labstack/echo"
 )
 
@@ -26,37 +27,41 @@ func TokenchekMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		if rawtoken == "" || err != nil {
 			db := db.Connect()
 			refresh := new(models.Refresh)
-			RFcookie, err := c.Cookie("RefreshCookie")
-			if err != nil { //todo go signin point
-				return err
+			cookie, err := c.Cookie("JWTRefreshToken")
+			rawRefreshtoken := cookie.Value
+			if rawRefreshtoken == "" || err != nil { //todo go signin point
+				return c.JSON(http.StatusUnauthorized, "err! signin again")
 			}
-			refreshtoken := RFcookie.Value
-			if refreshtoken == "" { //todo go signin point
-				return c.JSON(http.StatusUnauthorized, "null RF cookie Do signin again")
-			}
-			//dont reftoken in db
-			result := db.Find(refresh, "reftoken = ?", refreshtoken)
-			if result.RowsAffected == 0 { //todo go signin point
-				return c.JSON(http.StatusUnauthorized, "Do signin again")
-			}
-
-			//	refresh token OK ,remake//
-			token, err := jwt.Parse(refreshtoken, nil)
-			if token == nil {
-				return err
-			}
-			claims, _ := token.Claims.(jwt.MapClaims)
-			userid := claims["jti"].(string)
-			newtoken, err := handler.CreateAccessToken(userid)
+			///// auth & parse refresh token ///
+			refreshClaims := jwt.StandardClaims{}
+			token, err := jwt.ParseWithClaims(
+				rawRefreshtoken, &refreshClaims,
+				func(token *jwt.Token) (interface{}, error) {
+					return []byte(os.Getenv("key2")), nil
+				})
 			if err != nil {
-				log.Println("Err Creating Refresh Token!", err)
+				return c.JSON(http.StatusUnauthorized, "login again")
+			} else {
+				claims, _ := token.Claims.(jwt.MapClaims)
+				username := claims["jti"].(string) //<-parsed username in jwt
+
+				//dont reftoken in db
+				result := db.Select("id").Find(&refresh, rawRefreshtoken)
+				if result.RowsAffected == 0 { //todo go signin point
+					return c.JSON(http.StatusUnauthorized, "Do signin again")
+				}
+				newtoken, err := handler.CreateAccessToken(username)
+				if err != nil {
+					return c.JSON(401, "failed create new token")
+				}
+				JWTaccessCookie := handler.CreateAccessCookie(username, newtoken)
+				c.SetCookie(JWTaccessCookie)
+				TokenchekMiddleware(next)
 			}
-			JWTaccessCookie := handler.CreateAccessCookie(userid, newtoken)
-			c.SetCookie(JWTaccessCookie)
 		}
 
-		///auth token
-		_, err = jwt.ParseWithClaims(rawtoken, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
+		///auth access token
+		_, err = jwt.ParseWithClaims(rawtoken, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("key")), nil
 		})
 		if err != nil {
