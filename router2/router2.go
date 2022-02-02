@@ -20,6 +20,7 @@ func New() *echo.Echo {
 	e.GET("/api/signout", handler.SignOut)
 	w.GET("/write", handler.Boardform)
 	g.GET("/profile", Uprofile)
+
 	w.POST("/write", handler.WriteBoard) //upload board
 	e.POST("/api/signup", handler.Signup)
 	return e
