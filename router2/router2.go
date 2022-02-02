@@ -17,6 +17,7 @@ func New() *echo.Echo {
 	middlewares.Setlogincheker(g)
 	e.GET("/ckecktoken", handler.Checktoken)
 	e.GET("/api/signin", handler.SignIn)
+	e.GET("/api/signout", handler.SignOut)
 	w.GET("/write", handler.Boardform)
 	g.GET("/profile", Uprofile)
 	w.POST("/write", handler.WriteBoard) //upload board
@@ -32,3 +33,6 @@ func Uprofile(c echo.Context) error {
 
 	return c.String(http.StatusOK, "logged in user page")
 }
+
+//ToDo : make borad list, update list, delete board
+//TODO : log out

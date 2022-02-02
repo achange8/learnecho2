@@ -10,12 +10,13 @@ import (
 	"github.com/labstack/echo"
 )
 
-//get html,css form to write
+//GET html,css form to write
+//~/borad/list
 func Boardform(e echo.Context) error {
 	return e.JSON(http.StatusOK, "this is html form to write board only signin users")
 }
 
-//post board ~/write
+//POST ~/board/write
 func WriteBoard(c echo.Context) error {
 	cookie, err := c.Cookie("JWTaccessToken")
 	if err != nil { //TODO : reqeust refresh token ,create new actoken or login again

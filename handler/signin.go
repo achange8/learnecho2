@@ -103,7 +103,7 @@ func CreateAccessToken(userID string) (string, error) {
 }
 
 func createRefreshToken(userID string) (string, error) {
-	claims := &jwt.StandardClaims{
+	claims := jwt.StandardClaims{
 		Id:        userID,
 		ExpiresAt: time.Now().Add(24 * 7 * time.Hour).Unix(),
 	}
