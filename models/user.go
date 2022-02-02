@@ -1,11 +1,13 @@
 package models
 
-import "github.com/golang-jwt/jwt"
+import (
+	"github.com/golang-jwt/jwt"
+)
 
 type User struct {
 	Id       string `json:id`
 	Email    string `json:email`
-	Password string `json:password`
+	Password string `-`
 }
 
 type JwtClaims struct {
@@ -13,11 +15,12 @@ type JwtClaims struct {
 }
 
 type BOARD struct {
-	Id      int    `json:ID`
-	Title   string `json:TITLE`
-	Writer  string
-	Content string `json:CONTENT`
-	DB_DATE string
+	Num      int
+	Title    string `json:TITLE`
+	Writer   string `json:WRITER`
+	Content  string `json:CONTENT`
+	DB_DATE  string
+	HiTCOUNT int
 }
 
 type Refresh struct {

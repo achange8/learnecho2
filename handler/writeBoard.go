@@ -17,6 +17,7 @@ func Boardform(e echo.Context) error {
 }
 
 //POST ~/board/write
+//write button
 func WriteBoard(c echo.Context) error {
 	cookie, err := c.Cookie("JWTaccessToken")
 	if err != nil { //TODO : reqeust refresh token ,create new actoken or login again

@@ -14,12 +14,13 @@ func New() *echo.Echo {
 	g := e.Group("/user")
 	w := e.Group("/board")
 	w.Use(middlewares.TokenchekMiddleware)
-	middlewares.Setlogincheker(g)
+	g.Use(middlewares.TokenchekMiddleware)
+	e.GET("/view", handler.Readboard)
 	e.GET("/ckecktoken", handler.Checktoken)
 	e.GET("/api/signin", handler.SignIn)
 	e.GET("/api/signout", handler.SignOut)
+
 	w.GET("/write", handler.Boardform)
-	g.GET("/profile", Uprofile)
 	w.POST("/write", handler.WriteBoard) //upload board
 	e.POST("/api/signup", handler.Signup)
 	return e
