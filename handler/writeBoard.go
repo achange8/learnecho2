@@ -32,7 +32,7 @@ func WriteBoard(c echo.Context) error {
 	}
 	claims, _ := token.Claims.(jwt.MapClaims)
 	board := new(models.BOARD)
-	board.Writer = claims["jti"].(string)
+	board.WRITER = claims["jti"].(string)
 	board.DB_DATE = time.Now().Format("2006-01-02 15:04") //format time
 	err = c.Bind(board)
 	if err != nil {

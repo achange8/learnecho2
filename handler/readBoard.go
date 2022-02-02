@@ -19,7 +19,7 @@ func Readboard(c echo.Context) error {
 			"message": "bad request",
 		})
 	}
-	err := db.Raw("SELECT * FROM boards WHERE NUM = ?", board.Num).Scan(board)
+	err := db.Raw("SELECT * FROM boards WHERE NUM = ?", board.Num).Scan(&board)
 	if err.RowsAffected == 0 {
 		return c.JSON(http.StatusNotFound, err)
 	}

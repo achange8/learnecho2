@@ -24,6 +24,6 @@ func updateBoard(c echo.Context) error {
 	}
 	claims, _ := token.Claims.(jwt.MapClaims)
 	board := new(models.BOARD)
-	board.Writer = claims["jti"].(string)
+	board.WRITER = claims["jti"].(string)
 	return nil
 }
