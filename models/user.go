@@ -15,7 +15,7 @@ type JwtClaims struct {
 }
 
 type BOARD struct {
-	Num      int    `json:NUM`
+	NUM      int    `json:NUM`
 	TITLE    string `json:TITLE`
 	WRITER   string `json:WRITER`
 	CONTENT  string `json:CONTENT`

@@ -2,15 +2,23 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/achange8/learnecho2/db"
 	"github.com/achange8/learnecho2/models"
 	"github.com/labstack/echo"
 )
 
-//method : get board num
-//board/view/?num=**
+//method : get
+//localhost/view?id=**
 func Readboard(c echo.Context) error {
+	//parse id in url
+	id := c.QueryParam("id")
+	//change string--> int
+	num, numerr := strconv.Atoi(id)
+	if numerr != nil {
+		return c.JSON(http.StatusBadRequest, "page not found")
+	}
 	//select * from boards where id = {num}
 	db := db.Connect()
 	board := new(models.BOARD)
@@ -19,9 +27,9 @@ func Readboard(c echo.Context) error {
 			"message": "bad request",
 		})
 	}
-	err := db.Raw("SELECT * FROM boards WHERE NUM = ?", board.Num).Scan(&board)
-	if err.RowsAffected == 0 {
-		return c.JSON(http.StatusNotFound, err)
+	result := db.Raw("SELECT * FROM boards WHERE NUM = ?", num).Scan(&board)
+	if result.RowsAffected == 0 {
+		return c.JSON(http.StatusNotFound, "no result")
 	}
 	return c.JSON(http.StatusOK, board)
 }
