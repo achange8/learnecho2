@@ -13,6 +13,9 @@ func New() *echo.Echo {
 	e := echo.New()
 	g := e.Group("/user")
 	w := e.Group("/board")
+	m := e.Group("/modify")
+	m.Use(middlewares.TokenchekMiddleware)
+	//m.use check same user
 	w.Use(middlewares.TokenchekMiddleware)
 	g.Use(middlewares.TokenchekMiddleware)
 	e.GET("/view", handler.Readboard)

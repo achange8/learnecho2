@@ -4,6 +4,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+//Id = BOARD.WRITER
 type User struct {
 	Id       string `json:id`
 	Email    string `json:email`

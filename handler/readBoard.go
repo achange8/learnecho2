@@ -31,5 +31,8 @@ func Readboard(c echo.Context) error {
 	if result.RowsAffected == 0 {
 		return c.JSON(http.StatusNotFound, "no result")
 	}
+
+	db.Model(&board).Where("NUM = ?", board.NUM).Update("HITCOUNT", board.HiTCOUNT+1)
+
 	return c.JSON(http.StatusOK, board)
 }
