@@ -1,14 +1,17 @@
 package models
 
 import (
+	"time"
+
 	"github.com/golang-jwt/jwt"
+	"gorm.io/gorm"
 )
 
 //Id = BOARD.WRITER
 type User struct {
-	Id       string `json:id`
-	Email    string `json:email`
-	Password string `-`
+	Id       string
+	Email    string
+	Password string
 }
 
 type JwtClaims struct {
@@ -16,12 +19,13 @@ type JwtClaims struct {
 }
 
 type BOARD struct {
-	NUM      int    `json:NUM`
-	TITLE    string `json:TITLE`
-	WRITER   string `json:WRITER`
-	CONTENT  string `json:CONTENT`
-	DB_DATE  string
-	HiTCOUNT int
+	NUM       int `gorm:"primaryKey"`
+	TITLE     string
+	WRITER    string
+	CONTENT   string
+	CreatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	HiTCOUNT  int
 }
 
 type Refresh struct {
