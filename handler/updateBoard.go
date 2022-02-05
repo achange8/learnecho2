@@ -12,12 +12,13 @@ import (
 
 //board/modify/?id=~
 //method : get
-func updateBoard(c echo.Context) error {
+func UpdateBoard(c echo.Context) error {
 	cookie, err := c.Cookie("JWTaccessToken")
-	if err != nil { //TODO : reqeust refresh token ,create new actoken or login again
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, "You dont have accookie")
 	}
 
+	//used validation middleware(checktoken)
 	//get claims from jwt token without validation
 	rawtoken := cookie.Value
 	token, err := jwt.Parse(rawtoken, nil)
@@ -34,7 +35,6 @@ func updateBoard(c echo.Context) error {
 	if numerr != nil {
 		return c.JSON(http.StatusBadRequest, "page not found")
 	}
-	//select * from boards where id = {num}
 	db := db.Connect()
 	board := new(models.BOARD)
 	if err := c.Bind(board); err != nil {
@@ -42,25 +42,27 @@ func updateBoard(c echo.Context) error {
 			"message": "bad request",
 		})
 	}
+	//select * from boards where id = num & scan board
 	result := db.Raw("SELECT * FROM boards WHERE NUM = ?", num).Scan(&board)
 	if result.RowsAffected == 0 {
 		return c.JSON(http.StatusNotFound, "no result")
 	}
 	if username != board.WRITER {
-		return c.JSON(http.StatusUnauthorized, "Only the writer can modify it. ")
+		return c.JSON(http.StatusUnauthorized, "Only the writer can modify page. ")
 	}
 	return c.JSON(http.StatusOK, board)
 }
 
 //method post
 //board/modify/?id=~
-func postupdate(c echo.Context) error {
+//modify button
+func Postupdate(c echo.Context) error {
 	//parse id in url
 	id := c.QueryParam("id")
 	//change string--> int
 	num, numerr := strconv.Atoi(id)
 	if numerr != nil {
-		return c.JSON(http.StatusBadRequest, "page not found")
+		return c.JSON(http.StatusBadRequest, "bad request")
 	}
 	//select * from boards where id = {num}
 	db := db.Connect()
@@ -75,3 +77,16 @@ func postupdate(c echo.Context) error {
 	return c.JSON(http.StatusOK, board)
 
 }
+
+/*todo modify middleware
+
+1.check user == writer
+if token err != nil {
+	return c.json(http.statusun..,"you dont have right")
+}
+if token user != writer{
+	return c.json(http.statusun..,"modify only can chage writer")
+
+}
+next
+*/
