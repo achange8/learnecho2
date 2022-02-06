@@ -22,7 +22,7 @@ func Connect() *gorm.DB {
 	PROTOCOL := "tcp(localhost:3306)"
 	DBNAME := os.Getenv("DBNAME")
 
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8mb4&parseTime=True&loc=Local"
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8mb4&parseTime=True&loc=Asia%2FSeoul"
 	db, err := gorm.Open(mysql.Open(CONNECT), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
