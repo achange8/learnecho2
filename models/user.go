@@ -26,7 +26,7 @@ type BOARD struct {
 	WRITER    string
 	CONTENT   string
 	CreatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	DeletedAt gorm.DeletedAt `gorm:"->:false;<-:create"`
 	HiTCOUNT  int
 }
 
