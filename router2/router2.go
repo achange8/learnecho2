@@ -21,7 +21,7 @@ func New() *echo.Echo {
 	w.Use(middlewares.TokenchekMiddleware)
 	g.Use(middlewares.TokenchekMiddleware)
 	////////////////////////////////////////
-
+	e.GET("/", handler.Mainboard)
 	modify.GET("/?id=", handler.UpdateBoard)
 	modify.POST("/?id=", handler.Postupdate)
 	e.GET("/view/?id=", handler.Readboard)
