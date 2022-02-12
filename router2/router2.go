@@ -28,7 +28,7 @@ func New() *echo.Echo {
 	e.GET("/ckecktoken", handler.Checktoken)
 	e.GET("/api/signin", handler.SignIn)
 	e.GET("/api/signout", handler.SignOut)
-
+	e.GET("/", handler.Mainboard)
 	w.GET("/write", handler.Boardform)   //to write page
 	w.POST("/write", handler.WriteBoard) //upload wrote board
 	e.POST("/api/signup", handler.Signup)
