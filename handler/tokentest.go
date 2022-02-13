@@ -13,7 +13,7 @@ import (
 func Checktoken(c echo.Context) error {
 	envERR := godotenv.Load(".env")
 	if envERR != nil {
-		log.Println("Could not load .env file")
+		log.Println("Can not load .env file")
 		os.Exit(1)
 	}
 	cookie, err := c.Cookie("JWTRefreshToken")
