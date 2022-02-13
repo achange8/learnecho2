@@ -8,6 +8,8 @@ import (
 	"github.com/labstack/echo"
 )
 
+//method : get
+//localhost/
 func Mainboard(c echo.Context) error {
 	var list []models.BOARD
 	db := db.Connect()

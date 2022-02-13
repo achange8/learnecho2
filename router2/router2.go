@@ -10,25 +10,23 @@ import (
 func New() *echo.Echo {
 	e := echo.New()
 	g := e.Group("/user")
-	w := e.Group("/board")
+	write := e.Group("/board")
 	modify := e.Group("/modify")
 
 	//////middleware//////
 	modify.Use(middlewares.TokenchekMiddleware)
 
-	w.Use(middlewares.TokenchekMiddleware)
+	write.Use(middlewares.TokenchekMiddleware)
 	g.Use(middlewares.TokenchekMiddleware)
 	////////////////////////////////////////
 	e.GET("/", handler.Mainboard)
 	modify.GET("/?id=", handler.UpdateBoard)
 	modify.POST("/?id=", handler.Postupdate)
 	e.GET("/view/?id=", handler.Readboard)
-	e.GET("/ckecktoken", handler.Checktoken)
 	e.GET("/api/signin", handler.SignIn)
 	e.GET("/api/signout", handler.SignOut)
-	e.GET("/", handler.Mainboard)
-	w.GET("/write", handler.Boardform)   //to write page
-	w.POST("/write", handler.WriteBoard) //upload wrote board
+	write.GET("/write", handler.Boardform)   //to write page
+	write.POST("/write", handler.WriteBoard) //upload wrote board
 	e.POST("/api/signup", handler.Signup)
 	return e
 }
