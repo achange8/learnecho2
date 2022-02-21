@@ -23,7 +23,7 @@ func New() *echo.Echo {
 	modify.GET("/?id=", handler.UpdateBoard)
 	modify.POST("/?id=", handler.Postupdate)
 	e.GET("/view/?id=", handler.Readboard)
-	e.GET("/api/signin", handler.SignIn)
+	e.POST("/api/signin", handler.SignIn)
 	e.GET("/api/signout", handler.SignOut)
 	write.GET("/write", handler.Boardform)   //to write page
 	write.POST("/write", handler.WriteBoard) //upload wrote board
