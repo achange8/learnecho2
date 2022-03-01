@@ -19,8 +19,9 @@ func New() *echo.Echo {
 	//////middleware//////
 	modify.Use(middlewares.TokenchekMiddleware)
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowCredentials: true,
 	}))
 	write.Use(middlewares.TokenchekMiddleware)
 	g.Use(middlewares.TokenchekMiddleware)
