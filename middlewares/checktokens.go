@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+//check accToken, if err check reftoken in db and recreate acctoken
 func TokenchekMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		envERR := godotenv.Load(".env")
