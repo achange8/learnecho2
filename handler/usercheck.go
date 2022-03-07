@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+//method GET
 //return logged in user if not logged in, return nil
 func Usercheck(c echo.Context) error {
 	envERR := godotenv.Load(".env")
