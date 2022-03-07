@@ -17,9 +17,9 @@ func Connect() *gorm.DB {
 		fmt.Println("Could not load .env file")
 		os.Exit(1)
 	}
-	USER := os.Getenv("DBUSER")
-	PASS := os.Getenv("DBPASS")
-	PROTOCOL := "tcp(localhost:3306)"
+	USER := os.Getenv("username")
+	PASS := os.Getenv("password")
+	PROTOCOL := "tcp(database-2.cnxsbvp2uyyo.ap-northeast-2.rds.amazonaws.com)"
 	DBNAME := os.Getenv("DBNAME")
 
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8mb4&parseTime=True&loc=Asia%2FSeoul"
