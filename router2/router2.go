@@ -26,14 +26,14 @@ func New() *echo.Echo {
 	write.Use(middlewares.TokenchekMiddleware)
 	g.Use(middlewares.TokenchekMiddleware)
 	////////////////////////////////////////
-	g.GET("/check", handler.Usercheck)
-	e.GET("/", handler.Mainboard)
+	g.GET("/check", handler.Usercheck) // done
+	e.GET("/", handler.Mainboard)      // done
 	modify.GET("/?id=", handler.UpdateBoard)
 	modify.POST("/?id=", handler.Postupdate)
-	e.GET("/view/?id=", handler.Readboard)
-	e.POST("/api/signup", handler.Signup)
-	e.POST("/api/signin", handler.SignIn)
-	e.GET("/api/signout", handler.SignOut)
+	e.GET("/view/", handler.Readboard)
+	e.POST("/api/signup", handler.Signup)    // done
+	e.POST("/api/signin", handler.SignIn)    // done
+	e.GET("/api/signout", handler.SignOut)   // done
 	write.GET("/write", handler.Boardform)   //to write page
 	write.POST("/write", handler.WriteBoard) //upload wrote board
 	return e

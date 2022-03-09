@@ -10,28 +10,29 @@ import (
 )
 
 //method : get
-//localhost/view?id=**
+//localhost/view/?id=**
 func Readboard(c echo.Context) error {
 	//parse id in url
 	id := c.QueryParam("id")
+	println(id)
 	//change string--> int
 	num, numerr := strconv.Atoi(id)
 	if numerr != nil {
-		return c.JSON(http.StatusBadRequest, "page not found")
+		return c.JSON(http.StatusBadRequest, "page not found1")
 	}
 	//select * from boards where id = {num}
 	db := db.Connect()
 	board := new(models.BOARD)
 	if err := c.Bind(board); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "bad request",
+			"message": "bad request2",
 		})
 	}
 	result := db.Raw("SELECT * FROM boards WHERE NUM = ?", num).Scan(&board)
 	if result.RowsAffected == 0 {
-		return c.JSON(http.StatusNotFound, "no result")
+		return c.JSON(http.StatusNotFound, "no result1")
 	}
-	db.Model(board).Where("NUM = ?", board.NUM).Update("HiTCOUNT", board.HiTCOUNT+1)
+	db.Model(board).Where("NUM = ?", board.NUM).Update("hi_tcount", board.HiTCOUNT+1)
 
 	return c.JSON(http.StatusOK, board)
 }
