@@ -30,7 +30,8 @@ func New() *echo.Echo {
 	e.GET("/", handler.Mainboard)      // done
 	modify.GET("/?id=", handler.UpdateBoard)
 	modify.POST("/?id=", handler.Postupdate)
-	e.GET("/view/", handler.Readboard)
+	modify.DELETE("/", handler.DeleteBoard)
+	e.GET("/view/", handler.Readboard)       // done
 	e.POST("/api/signup", handler.Signup)    // done
 	e.POST("/api/signin", handler.SignIn)    // done
 	e.GET("/api/signout", handler.SignOut)   // done
