@@ -14,7 +14,6 @@ import (
 func Readboard(c echo.Context) error {
 	//parse id in url
 	id := c.QueryParam("id")
-	println(id)
 	//change string--> int
 	num, numerr := strconv.Atoi(id)
 	if numerr != nil {

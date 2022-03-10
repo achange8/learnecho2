@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-//method : delet
+//method : delete
 //must check access token
 //soft delete
 func DeleteBoard(c echo.Context) error {
