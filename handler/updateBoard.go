@@ -77,16 +77,3 @@ func Postupdate(c echo.Context) error {
 	return c.JSON(http.StatusOK, board)
 
 }
-
-/*todo modify middleware
-
-1.check user == writer
-if token err != nil {
-	return c.json(http.statusun..,"you dont have right")
-}
-if token user != writer{
-	return c.json(http.statusun..,"modify only can chage writer")
-
-}
-next
-*/
