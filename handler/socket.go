@@ -34,5 +34,4 @@ func handle(conn net.Conn) {
 		}
 		fmt.Println(data)
 	}
-	conn.Close()
 }
