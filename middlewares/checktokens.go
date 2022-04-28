@@ -63,7 +63,7 @@ func TokenchekMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			newtoken, err := handler.CreateAccessToken(username)
 			if err != nil {
-				return c.JSON(401, "failed create new token")
+				return c.JSON(http.StatusUnauthorized, "failed create new token")
 			}
 			JWTaccessCookie := handler.CreateAccessCookie(username, newtoken)
 			c.SetCookie(JWTaccessCookie)
