@@ -34,7 +34,7 @@ func SignIn(c echo.Context) error {
 
 	// 비밀번호 검증에 실패한 경우
 	if !res {
-		return c.JSON(http.StatusBadRequest, "wrong password")
+		return c.JSON(http.StatusUnauthorized, "wrong password")
 	} else {
 		//create ac token
 		AccessToken, err := CreateAccessToken(user.Id)
