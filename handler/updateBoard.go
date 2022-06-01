@@ -42,7 +42,7 @@ func UpdateBoard(c echo.Context) error {
 			"message": "bad request",
 		})
 	}
-	//select * from boards where id = num & scan board
+	//select * from boards where id = num and scan board
 	result := db.Raw("SELECT * FROM boards WHERE NUM = ?", num).Scan(&board)
 	if result.RowsAffected == 0 {
 		return c.JSON(http.StatusNotFound, "no result")
