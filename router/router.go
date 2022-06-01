@@ -34,7 +34,6 @@ func New() *echo.Echo {
 	e.POST("/api/signup", handler.Signup)    // done
 	e.POST("/api/signin", handler.SignIn)    // done
 	e.GET("/api/signout", handler.SignOut)   // done
-	write.GET("/write", handler.Boardform)   //to write page
 	write.POST("/write", handler.WriteBoard) //upload wrote board
 	return e
 }

@@ -9,12 +9,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-//GET html,css form to write
-//~/borad/list
-func Boardform(e echo.Context) error {
-	return e.JSON(http.StatusOK, "this is html form to write board only signin users")
-}
-
 //POST ~/board/write
 //write button
 func WriteBoard(c echo.Context) error {
@@ -32,7 +26,6 @@ func WriteBoard(c echo.Context) error {
 	claims, _ := token.Claims.(jwt.MapClaims)
 	board := new(models.BOARD)
 	board.WRITER = claims["jti"].(string)
-
 	err = c.Bind(board)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "bad request")
