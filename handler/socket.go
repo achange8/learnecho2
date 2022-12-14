@@ -9,7 +9,7 @@ import (
 )
 
 func Socket(c echo.Context) error {
-	server, err := net.Listen("tcp", ":8082")
+	server, err := net.Listen("tcp", ":8088")
 	if err != nil {
 		return err
 	}
